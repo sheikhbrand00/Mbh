@@ -1,7 +1,11 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
 <title>Ali Shoes Company</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
 
 body{
 font-family:Arial;
@@ -12,17 +16,34 @@ background:#f5f5f5;
 header{
 background:black;
 color:white;
-padding:20px;
-text-align:center;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
-.banner{
-background:#ff3c3c;
+header h2{
+margin:0;
+}
+
+nav a{
+color:white;
+margin:0 10px;
+text-decoration:none;
+}
+
+.hero{
+background:#111;
 color:white;
 text-align:center;
-padding:12px;
-font-size:20px;
-font-weight:bold;
+padding:40px;
+}
+
+.discount{
+background:red;
+padding:10px;
+margin-top:10px;
+display:inline-block;
 }
 
 .products{
@@ -36,13 +57,14 @@ padding:20px;
 background:white;
 border-radius:10px;
 box-shadow:0 5px 15px rgba(0,0,0,0.2);
-padding:15px;
+padding:10px;
 text-align:center;
 }
 
 .card img{
 width:100%;
-border-radius:8px;
+height:200px;
+object-fit:cover;
 }
 
 .old{
@@ -52,33 +74,28 @@ color:red;
 
 .new{
 color:green;
-font-size:22px;
+font-size:20px;
 font-weight:bold;
 }
 
-.btn{
-display:block;
-margin-top:10px;
-padding:10px;
+button{
 background:#25D366;
 color:white;
-text-decoration:none;
-border-radius:5px;
+border:none;
+padding:10px;
+margin-top:5px;
+cursor:pointer;
 }
 
-.social{
+.account{
 text-align:center;
 padding:20px;
+background:#eee;
 }
 
-.social a{
-display:inline-block;
-margin:10px;
-padding:10px 15px;
-background:black;
-color:white;
-text-decoration:none;
-border-radius:5px;
+input{
+padding:8px;
+margin:5px;
 }
 
 footer{
@@ -88,39 +105,132 @@ text-align:center;
 padding:20px;
 }
 
-</style></head><body><header>
-<h1>Ali Shoes Company</h1>
-<p>Premium Quality Shoes</p>
-</header><div class="banner">
-🔥 FLAT 50% DISCOUNT 🔥 <br>
-9000 → 4500
-</div><div class="products"><div class="card">
+.cart{
+background:red;
+padding:4px 8px;
+border-radius:50%;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h2>Ali Shoes</h2>
+
+<nav>
+
+<a href="#">Home</a>
+
+<a href="#account">Login</a>
+
+<a href="mailto:shkgeeeee@gmail.com">Email</a>
+
+<a href="https://www.instagram.com/sweetu_hun_yawr?igsh=MXRndmg1Ym1hbjNzbg==">Instagram</a>
+
+<a href="https://wa.me/923016305418">WhatsApp</a>
+
+<a href="#">Cart 🛒 <span id="cart-count" class="cart">0</span></a>
+
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h2>Premium Shoes Collection</h2>
+
+<div class="discount">
+🔥 Flat 50% Discount | 9000 → 4500
+</div>
+
+</section>
+
+<section class="products">
+
+<div class="card">
 <img src="IMG_20260316_203014.jpg">
 <h3>Premium Leather Shoe</h3>
 <p class="old">9000</p>
 <p class="new">4500</p>
-<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
-</div><div class="card">
+<button onclick="addCart()">Add to Cart</button>
+<a href="https://wa.me/923016305418"><button>Order</button></a>
+</div>
+
+<div class="card">
 <img src="IMG_20260316_203031.jpg">
 <h3>Classic Brown Shoe</h3>
 <p class="old">9000</p>
 <p class="new">4500</p>
-<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
-</div><div class="card">
+<button onclick="addCart()">Add to Cart</button>
+<a href="https://wa.me/923016305418"><button>Order</button></a>
+</div>
+
+<div class="card">
 <img src="IMG_20260316_202959.jpg">
 <h3>Stylish Formal Shoe</h3>
 <p class="old">9000</p>
 <p class="new">4500</p>
-<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
-</div><div class="card">
+<button onclick="addCart()">Add to Cart</button>
+<a href="https://wa.me/923016305418"><button>Order</button></a>
+</div>
+
+<div class="card">
 <img src="IMG_20260316_202852.jpg">
 <h3>Modern Black Shoe</h3>
 <p class="old">9000</p>
 <p class="new">4500</p>
-<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
-</div></div><div class="social"><a href="https://wa.me/923016305418">WhatsApp</a>
+<button onclick="addCart()">Add to Cart</button>
+<a href="https://wa.me/923016305418"><button>Order</button></a>
+</div>
 
-<a href="https://www.instagram.com/sweetu_hun_yawr?igsh=MXRndmg1Ym1hbjNzbg==">Instagram</a>
+</section>
 
-</div><footer><p>Email: shkgeeeee@gmail.com</p><p>© 2026 Ali Shoes Company</p></footer></body>
+<section id="account" class="account">
+
+<h3>Login / Sign Up</h3>
+
+<input type="text" placeholder="Username">
+
+<input type="password" placeholder="Password">
+
+<br>
+
+<button>Login</button>
+
+<button>Sign Up</button>
+
+</section>
+
+<footer>
+
+<p>Email: shkgeeeee@gmail.com</p>
+
+<p>Instagram: sweetu_hun_yawr</p>
+
+<p>WhatsApp: 923016305418</p>
+
+<p>© Ali Shoes Company</p>
+
+</footer>
+
+<script>
+
+let cart = 0;
+
+function addCart(){
+
+cart++;
+
+document.getElementById("cart-count").innerText = cart;
+
+alert("Product added to cart");
+
+}
+
+</script>
+
+</body>
     </html>
