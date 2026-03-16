@@ -1,142 +1,126 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>My Freelance Website</title>
-
-<style>
+<title>Ali Shoes Company</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
 
 body{
-margin:0;
 font-family:Arial;
+margin:0;
+background:#f5f5f5;
+}
+
+header{
+background:black;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.banner{
+background:#ff3c3c;
 color:white;
 text-align:center;
-height:100vh;
-background-size:cover;
-background-position:center;
-transition:1s;
+padding:12px;
+font-size:20px;
+font-weight:bold;
 }
 
-.overlay{
-background:rgba(0,0,0,0.6);
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:20px;
 }
 
-img{
-width:140px;
-border-radius:50%;
-border:4px solid white;
+.card{
+background:white;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+padding:15px;
+text-align:center;
 }
 
-h1{
-font-size:40px;
-margin:10px;
-}
-
-p{
-font-size:18px;
-}
-
-.button{
-display:inline-block;
-padding:12px 25px;
-margin:10px;
-font-size:18px;
-color:white;
-text-decoration:none;
+.card img{
+width:100%;
 border-radius:8px;
 }
 
-.whatsapp{
-background:#25D366;
+.old{
+text-decoration:line-through;
+color:red;
 }
 
-.instagram{
-background:#E1306C;
+.new{
+color:green;
+font-size:22px;
+font-weight:bold;
 }
 
-/* Floating WhatsApp */
-
-.float{
-position:fixed;
-bottom:20px;
-right:20px;
+.btn{
+display:block;
+margin-top:10px;
+padding:10px;
 background:#25D366;
 color:white;
-width:60px;
-height:60px;
-border-radius:50%;
-text-align:center;
-font-size:30px;
-line-height:60px;
 text-decoration:none;
+border-radius:5px;
 }
 
-</style>
-
-</head>
-
-<body>
-
-<div class="overlay">
-
-<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde">
-
-<h1>Sweetu</h1>
-
-<p>Freelancer | Web Design | Online Services</p>
-
-<a class="button whatsapp" href="https://wa.me/923016305418">
-WhatsApp Me
-</a>
-
-<a class="button instagram" href="https://www.instagram.com/sweetu_hun_yawr?igsh=MXRndmg1Ym1hbjNzbg==">
-Instagram
-</a>
-
-</div>
-
-<!-- Floating WhatsApp -->
-
-<a href="https://wa.me/923016305418" class="float">
-💬
-</a>
-
-<script>
-
-let images=[
-"https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-"https://images.unsplash.com/photo-1504639725590-34d0984388bd",
-"https://images.unsplash.com/photo-1519389950473-47ba0277781c"
-];
-
-let i=0;
-
-function changeBackground(){
-
-document.body.style.backgroundImage="url("+images[i]+")";
-
-i++;
-
-if(i==images.length){
-
-i=0;
-
+.social{
+text-align:center;
+padding:20px;
 }
 
+.social a{
+display:inline-block;
+margin:10px;
+padding:10px 15px;
+background:black;
+color:white;
+text-decoration:none;
+border-radius:5px;
 }
 
-setInterval(changeBackground,4000);
+footer{
+background:#222;
+color:white;
+text-align:center;
+padding:20px;
+}
 
-changeBackground();
+</style></head><body><header>
+<h1>Ali Shoes Company</h1>
+<p>Premium Quality Shoes</p>
+</header><div class="banner">
+🔥 FLAT 50% DISCOUNT 🔥 <br>
+9000 → 4500
+</div><div class="products"><div class="card">
+<img src="IMG_20260316_203014.jpg">
+<h3>Premium Leather Shoe</h3>
+<p class="old">9000</p>
+<p class="new">4500</p>
+<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
+</div><div class="card">
+<img src="IMG_20260316_203031.jpg">
+<h3>Classic Brown Shoe</h3>
+<p class="old">9000</p>
+<p class="new">4500</p>
+<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
+</div><div class="card">
+<img src="IMG_20260316_202959.jpg">
+<h3>Stylish Formal Shoe</h3>
+<p class="old">9000</p>
+<p class="new">4500</p>
+<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
+</div><div class="card">
+<img src="IMG_20260316_202852.jpg">
+<h3>Modern Black Shoe</h3>
+<p class="old">9000</p>
+<p class="new">4500</p>
+<a class="btn" href="https://wa.me/923016305418">Order on WhatsApp</a>
+</div></div><div class="social"><a href="https://wa.me/923016305418">WhatsApp</a>
 
-</script>
+<a href="https://www.instagram.com/sweetu_hun_yawr?igsh=MXRndmg1Ym1hbjNzbg==">Instagram</a>
 
-</body>
+</div><footer><p>Email: shkgeeeee@gmail.com</p><p>© 2026 Ali Shoes Company</p></footer></body>
     </html>
