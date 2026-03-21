@@ -1,53 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sweetu Pro Site</title>
+  <title>Sweetu Pro Business</title>
 
   <style>
     body {
-      background: black;
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, black, #111);
       color: gold;
       text-align: center;
-      font-family: Arial;
     }
-    input, button {
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .box {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px;
+    }
+
+    input, textarea {
+      width: 80%;
       padding: 10px;
       margin: 10px;
-      border-radius: 5px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
     }
+
     button {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
       background: gold;
       color: black;
       cursor: pointer;
-      transition: 0.3s;
     }
+
     button:hover {
-      transform: scale(1.1);
+      background: orange;
+    }
+
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      text-decoration: none;
     }
   </style>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
 </head>
 <body>
 
 <h1>Sweetu Business Website</h1>
 
-<!-- 🔹 Contact Info -->
 <p>📧 Email: shkgeeeee@gmail.com</p>
 <p>📞 Phone: 03016305418</p>
 
-<h2>Signup</h2>
-<input id="email" value="shkgeeeee@gmail.com" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<br>
-<button onclick="signup()">Signup</button>
+<!-- Login Signup -->
+<div class="box">
+  <h2>Signup / Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password"><br>
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+</div>
 
-<h2>Login</h2>
-<button onclick="login()">Login</button>
+<!-- Contact Form -->
+<div class="box">
+  <h2>Contact Form</h2>
+  <input id="name" placeholder="Your Name">
+  <textarea id="message" placeholder="Your Message"></textarea><br>
+  <button onclick="sendMessage()">Send Message</button>
+</div>
+
+<!-- WhatsApp -->
+<a class="whatsapp" href="https://wa.me/923016305418" target="_blank">💬</a>
 
 <script>
+  // 🔴 اپنی Firebase config یہاں ڈالنی ہے
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -56,23 +101,33 @@
 
   const app = firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
+  const db = firebase.firestore();
 
+  // Signup
   function signup() {
-    auth.createUserWithEmailAndPassword(
-      email.value,
-      password.value
-    ).then(() => {
-      alert("Signup Success");
-    }).catch(err => alert(err.message));
+    auth.createUserWithEmailAndPassword(email.value, password.value)
+    .then(() => alert("Signup Success"))
+    .catch(err => alert(err.message));
   }
 
+  // Login
   function login() {
-    auth.signInWithEmailAndPassword(
-      email.value,
-      password.value
-    ).then(() => {
-      alert("Login Success");
-    }).catch(err => alert(err.message));
+    auth.signInWithEmailAndPassword(email.value, password.value)
+    .then(() => alert("Login Success"))
+    .catch(err => alert(err.message));
+  }
+
+  // Send Message
+  function sendMessage() {
+    db.collection("messages").add({
+      name: name.value,
+      message: message.value,
+      time: new Date()
+    }).then(() => {
+      alert("Message Sent");
+      name.value = "";
+      message.value = "";
+    });
   }
 </script>
 
