@@ -39,10 +39,10 @@
     }
   </style>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <!-- ✅ FIX: Firebase v8 use کرو -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 </head>
 <body>
@@ -91,13 +91,13 @@
 
   function sendMessage() {
     db.collection("messages").add({
-      name: name.value,
-      message: message.value,
+      name: document.getElementById("name").value,
+      message: document.getElementById("message").value,
       time: new Date()
     }).then(() => {
       alert("Message Sent");
-      name.value = "";
-      message.value = "";
+      document.getElementById("name").value = "";
+      document.getElementById("message").value = "";
     });
   }
 </script>
