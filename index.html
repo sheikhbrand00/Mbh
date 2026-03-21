@@ -3,23 +3,41 @@
 <head>
   <title>Sweetu Pro Website</title>
 
+  <!-- ✅ Mobile Fix -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       margin: 0;
       font-family: Arial;
       color: white;
       text-align: center;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    /* 🔥 Background Slider FIXED */
+    /* 🔥 NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .nav-links button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      background: gold;
+      cursor: pointer;
+    }
+
+    /* 🔥 FULL SCREEN BACKGROUND */
     .bg-slider {
       position: fixed;
       top: 0;
@@ -27,7 +45,6 @@
       width: 100vw;
       height: 100vh;
       z-index: -1;
-      overflow: hidden;
     }
 
     .bg-slider img {
@@ -35,6 +52,7 @@
       width: 100vw;
       height: 100vh;
       object-fit: cover;
+      object-position: center;
       opacity: 0;
       animation: slideShow 18s infinite;
     }
@@ -44,16 +62,21 @@
     .bg-slider img:nth-child(3) { animation-delay: 12s; }
 
     @keyframes slideShow {
-      0% { opacity: 0; }
+      0% { opacity: 0; transform: scale(1); }
       10% { opacity: 1; }
-      30% { opacity: 1; }
+      30% { opacity: 1; transform: scale(1.1); }
       40% { opacity: 0; }
       100% { opacity: 0; }
     }
 
-    /* 🔥 Glass Box */
+    /* 🔥 CONTENT CENTER */
+    .container {
+      margin-top: 80px;
+    }
+
+    /* 🔥 GLASS BOX */
     .box {
-      margin: 10px;
+      margin: 15px auto;
       padding: 20px;
       width: 90%;
       max-width: 350px;
@@ -80,10 +103,6 @@
       font-weight: bold;
     }
 
-    h1 {
-      margin-bottom: 10px;
-    }
-
     .whatsapp {
       position: fixed;
       bottom: 20px;
@@ -93,11 +112,10 @@
       padding: 15px;
       border-radius: 50%;
       text-decoration: none;
-      font-size: 20px;
     }
   </style>
 
-  <!-- Firebase v8 -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -105,26 +123,40 @@
 </head>
 <body>
 
-<!-- 🔥 Background Images -->
+<!-- 🔥 NAVBAR -->
+<div class="navbar">
+  <div>🚀 Sweetu</div>
+  <div class="nav-links">
+    <button onclick="scrollToSection('home')">Home</button>
+    <button onclick="scrollToSection('contact')">Contact</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- 🔥 Background -->
 <div class="bg-slider">
   <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
   <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
   <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
 </div>
 
-<h1>🚀 Sweetu Business Website</h1>
+<div class="container" id="home">
+  <h1>🚀 Sweetu Business Website</h1>
 
-<div class="box">
-  <h2>Login with Google</h2>
-  <button onclick="googleLogin()">Login with Google</button>
-  <p id="user"></p>
-</div>
+  <!-- LOGIN -->
+  <div class="box">
+    <h2>Login with Google</h2>
+    <button onclick="googleLogin()">Login with Google</button>
+    <p id="user"></p>
+  </div>
 
-<div class="box">
-  <h2>Contact Form</h2>
-  <input id="name" placeholder="Your Name">
-  <textarea id="message" placeholder="Your Message"></textarea><br>
-  <button onclick="sendMessage()">Send Message</button>
+  <!-- CONTACT -->
+  <div class="box" id="contact">
+    <h2>Contact Form</h2>
+    <input id="name" placeholder="Your Name">
+    <textarea id="message" placeholder="Your Message"></textarea><br>
+    <button onclick="sendMessage()">Send Message</button>
+  </div>
 </div>
 
 <a class="whatsapp" href="https://wa.me/923016305418">💬</a>
@@ -147,9 +179,17 @@
 
   auth.onAuthStateChanged(user => {
     if (user) {
-      document.getElementById("user").innerText = "Welcome " + user.displayName;
+      document.getElementById("user").innerText =
+        "👤 " + user.displayName + " (" + user.email + ")";
     }
   });
+
+  function logout() {
+    auth.signOut().then(() => {
+      alert("Logged out");
+      document.getElementById("user").innerText = "";
+    });
+  }
 
   function sendMessage() {
     const name = document.getElementById("name").value;
@@ -170,7 +210,11 @@
       document.getElementById("message").value = "";
     });
   }
+
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
 </script>
 
 </body>
-    </html>
+  </html>
