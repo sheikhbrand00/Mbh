@@ -1,56 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sweetu Pro Business</title>
+  <title>Sweetu Pro Website</title>
 
   <style>
     body {
-      margin: 0;
-      font-family: Arial;
-      background: linear-gradient(135deg, black, #111);
+      background: black;
       color: gold;
       text-align: center;
+      font-family: Arial;
     }
-
-    h1 {
-      margin-top: 20px;
-    }
-
     .box {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 20px;
       margin: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
     }
-
     input, textarea {
-      width: 80%;
       padding: 10px;
       margin: 10px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
+      width: 80%;
     }
-
     button {
-      padding: 12px 20px;
-      border-radius: 8px;
-      border: none;
+      padding: 10px;
       background: gold;
-      color: black;
+      border: none;
       cursor: pointer;
     }
-
-    button:hover {
-      background: orange;
-    }
-
     .whatsapp {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #25D366;
+      background: green;
       color: white;
       padding: 15px;
       border-radius: 50%;
@@ -71,16 +52,12 @@
 <p>📧 Email: shkgeeeee@gmail.com</p>
 <p>📞 Phone: 03016305418</p>
 
-<!-- Login Signup -->
 <div class="box">
-  <h2>Signup / Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password"><br>
-  <button onclick="signup()">Signup</button>
-  <button onclick="login()">Login</button>
+  <h2>Login with Google</h2>
+  <button onclick="googleLogin()">Login with Google</button>
+  <p id="user"></p>
 </div>
 
-<!-- Contact Form -->
 <div class="box">
   <h2>Contact Form</h2>
   <input id="name" placeholder="Your Name">
@@ -88,36 +65,30 @@
   <button onclick="sendMessage()">Send Message</button>
 </div>
 
-<!-- WhatsApp -->
-<a class="whatsapp" href="https://wa.me/923016305418" target="_blank">💬</a>
+<a class="whatsapp" href="https://wa.me/923016305418">💬</a>
 
 <script>
-  // 🔴 اپنی Firebase config یہاں ڈالنی ہے
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
+    apiKey: "AIzaSyBdyWxAqaHswKhP1CJSGviFFg4h9oMK2Aw",
+    authDomain: "sweetu-site.firebaseapp.com",
+    projectId: "sweetu-site"
   };
 
-  const app = firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // Signup
-  function signup() {
-    auth.createUserWithEmailAndPassword(email.value, password.value)
-    .then(() => alert("Signup Success"))
-    .catch(err => alert(err.message));
+  function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithRedirect(provider);
   }
 
-  // Login
-  function login() {
-    auth.signInWithEmailAndPassword(email.value, password.value)
-    .then(() => alert("Login Success"))
-    .catch(err => alert(err.message));
-  }
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("user").innerText = "Welcome " + user.displayName;
+    }
+  });
 
-  // Send Message
   function sendMessage() {
     db.collection("messages").add({
       name: name.value,
