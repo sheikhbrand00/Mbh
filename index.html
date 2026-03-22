@@ -37,6 +37,12 @@
       border-radius: 5px;
       background: gold;
       cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .nav-links button:hover {
+      background: orange;
+      transform: scale(1.05);
     }
 
     .bg-slider {
@@ -79,6 +85,12 @@
 
     .container {
       margin-top: 90px;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .box {
@@ -89,6 +101,17 @@
       border-radius: 15px;
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(12px);
+      animation: slideUp 0.8s ease;
+      transition: 0.3s;
+    }
+
+    .box:hover {
+      transform: translateY(-5px);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     input, textarea {
@@ -106,6 +129,12 @@
       cursor: pointer;
       border-radius: 5px;
       font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: orange;
+      transform: scale(1.05);
     }
 
     .whatsapp {
@@ -117,6 +146,11 @@
       padding: 15px;
       border-radius: 50%;
       text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .whatsapp:hover {
+      transform: scale(1.1);
     }
   </style>
 
@@ -132,7 +166,7 @@
   <div>🚀 Sweetu</div>
   <div class="nav-links">
     <button onclick="scrollToSection('home')">Home</button>
-    <button onclick="openWhatsApp()">Contact</button> <!-- ✅ FIX -->
+    <button onclick="openWhatsApp()">Contact</button>
     <button onclick="logout()">Logout</button>
   </div>
 </div>
@@ -230,11 +264,13 @@
     document.getElementById(id).scrollIntoView({ behavior: "smooth" });
   }
 
-  /* ✅ NEW FUNCTION (WhatsApp Redirect) */
+  /* 🔥 AUTO WHATSAPP MESSAGE */
   function openWhatsApp() {
-    window.open("https://wa.me/923016305418", "_blank");
+    const message = "Hello Sweetu! I want to contact you.";
+    const url = "https://wa.me/923016305418?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
   }
 </script>
 
 </body>
-    </html>
+</html>
