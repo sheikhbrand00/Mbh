@@ -17,7 +17,6 @@
       text-align: center;
     }
 
-    /* 🔥 NAVBAR */
     .navbar {
       position: fixed;
       top: 0;
@@ -40,10 +39,9 @@
       cursor: pointer;
     }
 
-    /* 🔥 BACKGROUND FULL FIX */
     .bg-slider {
       position: fixed;
-      inset: 0; /* 🔥 FULL SCREEN FIX */
+      inset: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
@@ -73,7 +71,6 @@
       100% { opacity: 0; }
     }
 
-    /* 🔥 DARK OVERLAY (text clear) */
     .bg-overlay {
       position: fixed;
       inset: 0;
@@ -81,7 +78,6 @@
       z-index: -1;
     }
 
-    /* 🔥 CONTENT */
     .container {
       margin-top: 90px;
     }
@@ -134,7 +130,6 @@
 </head>
 <body>
 
-<!-- 🔥 NAVBAR -->
 <div class="navbar">
   <div>🚀 Sweetu</div>
   <div class="nav-links">
@@ -144,7 +139,6 @@
   </div>
 </div>
 
-<!-- 🔥 BACKGROUND -->
 <div class="bg-slider">
   <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
   <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
@@ -183,9 +177,17 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  // 🔥 FIXED LOGIN (Popup)
   function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithRedirect(provider);
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        document.getElementById("user").innerText =
+          "👤 " + result.user.displayName + " (" + result.user.email + ")";
+      })
+      .catch((error) => {
+        alert("Login Error: " + error.message);
+      });
   }
 
   auth.onAuthStateChanged(user => {
@@ -228,4 +230,4 @@
 </script>
 
 </body>
-      </html>
+  </html>
