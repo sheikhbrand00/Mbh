@@ -1,147 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Freelance Website</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+color:white;
+text-align:center;
+height:100vh;
+background-size:cover;
+background-position:center;
+transition:1s;
+}
+
+.overlay{
+background:rgba(0,0,0,0.6);
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+img{
+width:140px;
+border-radius:50%;
+border:4px solid white;
+}
+
+h1{
+font-size:40px;
+margin:10px;
+}
+
+p{
+font-size:18px;
+}
+
+.button{
+display:inline-block;
+padding:12px 25px;
+margin:10px;
+font-size:18px;
+color:white;
+text-decoration:none;
+border-radius:8px;
+}
+
+.whatsapp{
+background:#25D366;
+}
+
+.instagram{
+background:#E1306C;
+}
+
+/* Floating WhatsApp */
+
+.float{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#25D366;
+color:white;
+width:60px;
+height:60px;
+border-radius:50%;
+text-align:center;
+font-size:30px;
+line-height:60px;
+text-decoration:none;
+}
+
+/* 🤖 AI BOX */
+
+.ai-box{
+position:fixed;
+bottom:100px;
+right:20px;
+width:250px;
+background:black;
+padding:10px;
+border-radius:10px;
+}
+
+.ai-box input{
+width:90%;
+padding:5px;
+margin-top:5px;
+}
+
+.ai-box button{
+margin-top:5px;
+padding:5px;
+}
+
+#chat p{
+font-size:12px;
+text-align:left;
+margin:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+
+<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde">
+
+<h1>Sweetu</h1>
+
+<p>Freelancer | Web Design | Online Services</p>
+
+<a class="button whatsapp" onclick="startWhatsApp()">
+WhatsApp Me
+</a>
+
+<a class="button instagram" href="https://instagram.com/yourprofile">
+Instagram
+</a>
+
+</div>
+
+<!-- 🤖 AI BOX -->
+
+<div class="ai-box">
+<div id="chat"></div>
+<input id="aiInput" placeholder="Type...">
+<button onclick="askAI()">Send</button>
+</div>
+
+<!-- Floating WhatsApp -->
+
+<a href="#" onclick="startWhatsApp()" class="float">
+💬
+</a>
+
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBdyWxAqaHswKhP1CJSGviFFg4h9oMK2Aw",
-    authDomain: "sweetu-site.firebaseapp.com",
-    projectId: "sweetu-site"
-  };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+let images=[
+"https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+"https://images.unsplash.com/photo-1504639725590-34d0984388bd",
+"https://images.unsplash.com/photo-1519389950473-47ba0277781c"
+];
 
-  function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .catch((error) => {
-        alert("Login Error: " + error.message);
-      });
-  }
+let i=0;
 
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      document.getElementById("user").innerText =
-        "👤 " + user.displayName + " (" + user.email + ")";
+function changeBackground(){
+document.body.style.backgroundImage="url("+images[i]+")";
+i++;
+if(i==images.length){ i=0; }
+}
 
-      db.collection("users").doc(user.uid).set({
-        name: user.displayName,
-        email: user.email,
-        uid: user.uid,
-        lastLogin: new Date()
-      });
-    } else {
-      document.getElementById("user").innerText = "";
-    }
-  });
+setInterval(changeBackground,4000);
+changeBackground();
 
-  function logout() {
-    auth.signOut().then(() => {
-      alert("Logged out");
-    });
-  }
 
-  function sendMessage() {
-    const name = document.getElementById("name").value;
-    const message = document.getElementById("message").value;
+// 🤖 AI SYSTEM
 
-    if(name === "" || message === "") {
-      alert("Please fill all fields");
-      return;
-    }
+let step=0;
+let lead={};
 
-    db.collection("messages").add({
-      name: name,
-      message: message,
-      time: new Date()
-    }).then(() => {
-      alert("Message Sent ✅");
-      document.getElementById("name").value = "";
-      document.getElementById("message").value = "";
-    });
-  }
+function askAI(){
 
-  function scrollToSection(id) {
-    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-  }
+let input=document.getElementById("aiInput");
+let chat=document.getElementById("chat");
 
-  function openWhatsApp() {
-    const message = "Hello Sweetu! I want to contact you.";
-    const url = "https://wa.me/923016305418?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
-  }
+let text=input.value;
+if(text=="") return;
 
-  // 🤖 ADVANCED AUTO CLIENT CAPTURE + WHATSAPP AI
-  let step = 0;
-  let lead = {};
+chat.innerHTML += "<p>👤 "+text+"</p>";
 
-  function askAI() {
-    const input = document.getElementById("aiInput");
-    const chat = document.getElementById("chatBox");
+let reply="";
 
-    let text = input.value.trim();
-    if(text === "") return;
+if(step==0){
+reply="🚀 Welcome!\nName?";
+step=1;
+}
 
-    chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
+else if(step==1){
+lead.name=text;
+reply="😊 What website you need?";
+step=2;
+}
 
-    let reply = "";
+else if(step==2){
+lead.need=text;
+reply="💰 Price: 1500 PKR\nInterested? (yes/no)";
+step=3;
+}
 
-    if(step === 0) {
-      reply = "🚀 Welcome!\n\nہم آپ کو earning machine بنا سکتے ہیں 💰\n\nآپ کا نام کیا ہے؟";
-      step = 1;
-    }
+else if(step==3){
 
-    else if(step === 1) {
-      lead.name = text;
-      reply = `😊 Nice ${text}!\n\nآپ کو کس type کی website چاہیے؟`;
-      step = 2;
-    }
+if(text.toLowerCase().includes("yes")){
 
-    else if(step === 2) {
-      lead.need = text;
-      reply = "💰 ہم آپ کے لیے professional website بنائیں گے\n\n🔥 Price: 1500 PKR\n\nInterested? (yes/no)";
-      step = 3;
-    }
+let msg=
+"Hello Sweetu!\n"+
+"Name: "+lead.name+"\n"+
+"Need: "+lead.need+"\n"+
+"Budget: 1500 PKR";
 
-    else if(step === 3) {
+let url="https://wa.me/923016305418?text="+encodeURIComponent(msg);
 
-      if(text.toLowerCase().includes("yes")) {
+reply="📲 Opening WhatsApp...";
 
-        // 🔥 FIREBASE SAVE (UNCHANGED)
-        db.collection("leads").add({
-          name: lead.name,
-          need: lead.need,
-          time: new Date()
-        });
+setTimeout(()=>{
+window.open(url,"_blank");
+},1000);
 
-        // 🔥 SMART WHATSAPP AUTO MESSAGE
-        const waMessage =
-          "👋 Hello Sweetu!\n\n" +
-          "Name: " + lead.name + "\n" +
-          "Need: " + lead.need + "\n" +
-          "Budget: 1500 PKR\n\n" +
-          "🚀 I want to start now";
+}else{
+reply="👍 Contact later on WhatsApp";
+}
 
-        const url = "https://wa.me/923016305418?text=" + encodeURIComponent(waMessage);
+step=0;
+lead={};
+}
 
-        reply = "🔥 Great!\n\n📲 WhatsApp پر جا رہے ہیں...\n\nDeal start کریں 🚀";
+setTimeout(()=>{
+chat.innerHTML += "<p>🤖 "+reply+"</p>";
+},300);
 
-        // 🔥 AUTO REDIRECT
-        setTimeout(() => {
-          window.open(url, "_blank");
-        }, 1500);
+input.value="";
+}
 
-      } else {
-        reply = "😊 کوئی مسئلہ نہیں!\n\nجب ready ہوں WhatsApp پر آئیں 👍";
-      }
 
-      step = 0;
-      lead = {};
-    }
+// 🔥 WhatsApp Button Smart
 
-    setTimeout(() => {
-      chat.innerHTML += `<p class="ai-msg">🤖 ${reply.replace(/\n/g,"<br>")}</p>`;
-      chat.scrollTop = chat.scrollHeight;
-    }, 400);
+function startWhatsApp(){
 
-    input.value = "";
-  }
+let msg="Hello Sweetu! I want a website (1500 PKR)";
+let url="https://wa.me/923016305418?text="+encodeURIComponent(msg);
+window.open(url,"_blank");
+
+}
+
 </script>
+
+</body>
+  </html>
