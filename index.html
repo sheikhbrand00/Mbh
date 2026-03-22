@@ -1,3 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sweetu Pro Website</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: Arial;
+      color: white;
+      text-align: center;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .nav-links button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      background: gold;
+      cursor: pointer;
+    }
+
+    .bg-slider {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .bg-slider img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0;
+      animation: slideShow 18s infinite;
+    }
+
+    .bg-slider img:nth-child(1) { animation-delay: 0s; }
+    .bg-slider img:nth-child(2) { animation-delay: 6s; }
+    .bg-slider img:nth-child(3) { animation-delay: 12s; }
+
+    @keyframes slideShow {
+      0% { opacity: 0; transform: scale(1); }
+      10% { opacity: 1; }
+      30% { opacity: 1; transform: scale(1.08); }
+      40% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: -1;
+    }
+
+    .container {
+      margin-top: 90px;
+    }
+
+    .box {
+      margin: 15px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 350px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    input, textarea {
+      padding: 10px;
+      margin: 10px;
+      width: 90%;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: gold;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: green;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      text-decoration: none;
+    }
+  </style>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+</head>
+<body>
+
+<div class="navbar">
+  <div>🚀 Sweetu</div>
+  <div class="nav-links">
+    <button onclick="scrollToSection('home')">Home</button>
+    <button onclick="scrollToSection('contact')">Contact</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="bg-slider">
+  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
+  <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
+  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
+</div>
+
+<div class="bg-overlay"></div>
+
+<div class="container" id="home">
+  <h1>🚀 Sweetu Business Website</h1>
+
+  <div class="box">
+    <h2>Login with Google</h2>
+    <button onclick="googleLogin()">Login with Google</button>
+    <p id="user"></p>
+  </div>
+
+  <div class="box" id="contact">
+    <h2>Contact Form</h2>
+    <input id="name" placeholder="Your Name">
+    <textarea id="message" placeholder="Your Message"></textarea><br>
+    <button onclick="sendMessage()">Send Message</button>
+  </div>
+</div>
+
+<a class="whatsapp" href="https://wa.me/923016305418">💬</a>
+
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyBdyWxAqaHswKhP1CJSGviFFg4h9oMK2Aw",
@@ -9,55 +177,34 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  let currentUser = null;
-
-  // 🔥 GOOGLE LOGIN (POPUP)
+  // 🔥 FIXED LOGIN (Popup)
   function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
+      .then((result) => {
+        document.getElementById("user").innerText =
+          "👤 " + result.user.displayName + " (" + result.user.email + ")";
+      })
       .catch((error) => {
         alert("Login Error: " + error.message);
       });
   }
 
-  // 🔥 USER TRACK + SAVE
   auth.onAuthStateChanged(user => {
     if (user) {
-      currentUser = user;
-
-      // 👤 UI show
       document.getElementById("user").innerText =
         "👤 " + user.displayName + " (" + user.email + ")";
-
-      // 🔥 DATABASE SAVE (IMPORTANT)
-      db.collection("users").doc(user.uid).set({
-        name: user.displayName,
-        email: user.email,
-        uid: user.uid,
-        lastLogin: new Date()
-      });
-
-    } else {
-      currentUser = null;
-      document.getElementById("user").innerText = "";
     }
   });
 
-  // 🔥 LOGOUT
   function logout() {
     auth.signOut().then(() => {
       alert("Logged out");
+      document.getElementById("user").innerText = "";
     });
   }
 
-  // 🔥 SEND MESSAGE (LOGIN REQUIRED)
   function sendMessage() {
-
-    if (!currentUser) {
-      alert("❌ Please login first");
-      return;
-    }
-
     const name = document.getElementById("name").value;
     const message = document.getElementById("message").value;
 
@@ -69,8 +216,6 @@
     db.collection("messages").add({
       name: name,
       message: message,
-      userEmail: currentUser.email,
-      userName: currentUser.displayName,
       time: new Date()
     }).then(() => {
       alert("Message Sent ✅");
@@ -82,4 +227,7 @@
   function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({ behavior: "smooth" });
   }
-        </script>
+</script>
+
+</body>
+  </html>
