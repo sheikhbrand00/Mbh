@@ -14,71 +14,33 @@
       font-family: Arial;
       color: white;
       text-align: center;
+      transition: 0.3s;
+    }
+
+    .dark {
+      background: #111;
+      color: #fff;
     }
 
     .navbar {
       position: fixed;
       top: 0;
-      left: 0;
       width: 100%;
       display: flex;
       justify-content: space-between;
       padding: 10px 20px;
       background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
-      z-index: 10;
     }
 
     .nav-links button {
       margin: 5px;
-      padding: 8px 12px;
+      padding: 8px;
+      background: gold;
       border: none;
       border-radius: 5px;
-      background: gold;
-      cursor: pointer;
     }
 
-    .bg-slider {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      z-index: -2;
-    }
-
-    .bg-slider img {
-      position: absolute;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      opacity: 0;
-      animation: slideShow 18s infinite;
-    }
-
-    .bg-slider img:nth-child(1) { animation-delay: 0s; }
-    .bg-slider img:nth-child(2) { animation-delay: 6s; }
-    .bg-slider img:nth-child(3) { animation-delay: 12s; }
-
-    @keyframes slideShow {
-      0% { opacity: 0; }
-      10% { opacity: 1; }
-      30% { opacity: 1; transform: scale(1.05); }
-      40% { opacity: 0; }
-      100% { opacity: 0; }
-    }
-
-    .bg-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: -1;
-    }
-
-    .container {
-      margin-top: 90px;
-    }
+    .container { margin-top: 80px; }
 
     .box {
       margin: 15px auto;
@@ -87,47 +49,42 @@
       max-width: 350px;
       border-radius: 15px;
       background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(12px);
+      transition: 0.3s;
+    }
+
+    .box:hover {
+      transform: scale(1.05);
     }
 
     input, textarea {
       padding: 10px;
       margin: 10px;
       width: 90%;
-      border: none;
       border-radius: 5px;
+      border: none;
     }
 
     button {
-      padding: 10px 20px;
+      padding: 10px;
       background: gold;
       border: none;
-      cursor: pointer;
       border-radius: 5px;
-      font-weight: bold;
+      cursor: pointer;
     }
 
-    .whatsapp {
+    #chatBox { height:200px; overflow:auto; }
+
+    .user-msg { background:#222; padding:6px; margin:5px; }
+    .ai-msg { background:green; padding:6px; margin:5px; }
+
+    #notify {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      top: 70px;
+      right: 10px;
       background: green;
-      color: white;
-      padding: 15px;
-      border-radius: 50%;
-      text-decoration: none;
+      padding: 10px;
+      display: none;
     }
-
-    #chatBox p {
-      margin: 6px;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 14px;
-      text-align:left;
-    }
-
-    .user-msg { background: #222; }
-    .ai-msg { background: green; }
   </style>
 
   <!-- Firebase -->
@@ -141,189 +98,123 @@
 <div class="navbar">
   <div>🚀 Sweetu</div>
   <div class="nav-links">
-    <button onclick="scrollToSection('home')">Home</button>
-    <button onclick="openWhatsApp()">Contact</button>
+    <button onclick="toggleDark()">🌙</button>
     <button onclick="logout()">Logout</button>
   </div>
 </div>
 
-<div class="bg-slider">
-  <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a">
-  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
-  <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d">
+<div class="container">
+
+<h1>🚀 Sweetu Business Website</h1>
+
+<!-- LOGIN -->
+<div class="box">
+  <h2>Login</h2>
+  <button onclick="googleLogin()">Login with Google</button>
+  <p id="user"></p>
 </div>
 
-<div class="bg-overlay"></div>
-
-<div class="container" id="home">
-  <h1>🚀 Sweetu Business Website</h1>
-
-  <div class="box">
-    <h2>Login with Google</h2>
-    <button onclick="googleLogin()">Login with Google</button>
-    <p id="user"></p>
-  </div>
-
-  <div class="box">
-    <h2>🤖 AI Business Assistant</h2>
-    <div id="chatBox" style="height:200px;overflow:auto;"></div>
-    <input id="aiInput" placeholder="Start chat...">
-    <button onclick="askAI()">Send</button>
-  </div>
-
-  <div class="box" id="contact">
-    <h2>Contact Form</h2>
-    <input id="name" placeholder="Your Name">
-    <textarea id="message" placeholder="Your Message"></textarea><br>
-    <button onclick="sendMessage()">Send Message</button>
-  </div>
+<!-- AI CHAT -->
+<div class="box">
+  <h2>🤖 AI Assistant</h2>
+  <div id="chatBox"></div>
+  <input id="aiInput" placeholder="Start chat...">
+  <button onclick="askAI()">Send</button>
 </div>
 
-<a class="whatsapp" href="https://wa.me/923016305418?text=Hello Sweetu! I want to contact you.">💬</a>
+<!-- CONTACT -->
+<div class="box">
+  <h2>Contact</h2>
+  <input id="name" placeholder="Your Name">
+  <textarea id="message"></textarea>
+  <button onclick="sendMessage()">Send</button>
+  <p>📧 shkgeeeee@gmail.com</p>
+</div>
+
+<!-- PAYMENT -->
+<div class="box">
+  <h2>💳 Buy Now</h2>
+  <button onclick="payNow()">JazzCash Pay</button>
+</div>
+
+<!-- REVIEWS -->
+<div class="box">
+  <h2>⭐ Reviews</h2>
+  <p>⭐⭐⭐⭐⭐ Amazing Work!</p>
+  <p>⭐⭐⭐⭐⭐ Best Developer</p>
+</div>
+
+<div id="notify">Done ✅</div>
+
+</div>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBdyWxAqaHswKhP1CJSGviFFg4h9oMK2Aw",
-    authDomain: "sweetu-site.firebaseapp.com",
-    projectId: "sweetu-site"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBdyWxAqaHswKhP1CJSGviFFg4h9oMK2Aw",
+  authDomain: "sweetu-site.firebaseapp.com",
+  projectId: "sweetu-site"
+};
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .catch((error) => {
-        alert("Login Error: " + error.message);
-      });
+// LOGIN
+function googleLogin(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+}
+
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById("user").innerText =
+    user.displayName + " (" + user.email + ")";
   }
+});
 
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      document.getElementById("user").innerText =
-        "👤 " + user.displayName + " (" + user.email + ")";
+// LOGOUT
+function logout(){
+  auth.signOut();
+}
 
-      db.collection("users").doc(user.uid).set({
-        name: user.displayName,
-        email: user.email,
-        uid: user.uid,
-        lastLogin: new Date()
-      });
-    } else {
-      document.getElementById("user").innerText = "";
-    }
-  });
+// CONTACT
+function sendMessage(){
+  let name = document.getElementById("name").value;
+  let message = document.getElementById("message").value;
 
-  function logout() {
-    auth.signOut().then(() => {
-      alert("Logged out");
-    });
-  }
+  db.collection("messages").add({name,message,time:new Date()});
+  alert("Message Sent");
+}
 
-  function sendMessage() {
-    const name = document.getElementById("name").value;
-    const message = document.getElementById("message").value;
+// PAYMENT
+function payNow(){
+  alert("Send to JazzCash: 03016305418");
+  showNotify();
+}
 
-    if(name === "" || message === "") {
-      alert("Please fill all fields");
-      return;
-    }
+// DARK MODE
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
 
-    db.collection("messages").add({
-      name: name,
-      message: message,
-      time: new Date()
-    }).then(() => {
-      alert("Message Sent ✅");
-      document.getElementById("name").value = "";
-      document.getElementById("message").value = "";
-    });
-  }
+// NOTIFICATION
+function showNotify(){
+  let n = document.getElementById("notify");
+  n.style.display = "block";
+  setTimeout(()=>{ n.style.display="none"; },2000);
+}
 
-  function scrollToSection(id) {
-    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-  }
+// AI CHAT SIMPLE
+function askAI(){
+  let input = document.getElementById("aiInput");
+  let chat = document.getElementById("chatBox");
 
-  function openWhatsApp() {
-    const message = "Hello Sweetu! I want to contact you.";
-    const url = "https://wa.me/923016305418?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
-  }
+  chat.innerHTML += "<p class='user-msg'>"+input.value+"</p>";
+  chat.innerHTML += "<p class='ai-msg'>Thanks! We will contact you.</p>";
 
-  // 🤖 FINAL AI (UPGRADED ONLY)
-  let lead = { name:"", need:"", budget:"", step:0 };
-
-  function askAI() {
-    const input = document.getElementById("aiInput");
-    const chat = document.getElementById("chatBox");
-
-    let text = input.value.trim();
-    if(text === "") return;
-
-    chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
-    input.value = "";
-
-    let reply = "";
-
-    if(lead.step === 0){
-      reply = "👋 Welcome to Sweetu AI Agency 🚀\n\nApna naam batayein 😊";
-      lead.step = 1;
-    }
-
-    else if(lead.step === 1){
-      lead.name = text;
-      reply = "😊 Aap kis type ki website chahte hain?";
-      lead.step = 2;
-    }
-
-    else if(lead.step === 2){
-      lead.need = text;
-      reply = "💰 Aapka budget kya hai? (1500 / 3000 / 5000)";
-      lead.step = 3;
-    }
-
-    else if(lead.step === 3){
-      lead.budget = text;
-
-      reply = `🔥 Packages:\n\n💰 1500 PKR - Basic\n🚀 3000 PKR - Standard\n👑 5000 PKR - Premium\n\nInterested?`;
-      lead.step = 4;
-    }
-
-    else if(lead.step === 4){
-      if(text.toLowerCase().includes("yes")){
-
-        db.collection("leads").add({
-          name: lead.name,
-          need: lead.need,
-          budget: lead.budget,
-          time: new Date()
-        });
-
-        let msg = `Name: ${lead.name}\nNeed: ${lead.need}\nBudget: ${lead.budget}\nI want to start`;
-
-        let url = "https://wa.me/923016305418?text=" + encodeURIComponent(msg);
-
-        reply = "🔥 WhatsApp open ho raha hai...";
-
-        setTimeout(()=>{
-          window.open(url, "_blank");
-        },1500);
-
-      } else {
-        reply = "👍 Jab ready ho WhatsApp par aa jana";
-      }
-
-      lead = { name:"", need:"", budget:"", step:0 };
-    }
-
-    setTimeout(() => {
-      chat.innerHTML += `<p class="ai-msg">🤖 ${reply.replace(/\n/g,"<br>")}</p>`;
-      chat.scrollTop = chat.scrollHeight;
-    }, 400);
-  }
+  input.value="";
+}
 </script>
 
 </body>
-</html>
+  </html>
