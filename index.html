@@ -120,6 +120,7 @@
   <div id="chatBox"></div>
   <input id="aiInput" placeholder="Start chat...">
   <button onclick="askAI()">Send</button>
+  <button onclick="startVoice()">🎤 Speak</button>
 </div>
 
 <!-- CONTACT -->
@@ -204,15 +205,91 @@ function showNotify(){
   setTimeout(()=>{ n.style.display="none"; },2000);
 }
 
-// AI CHAT SIMPLE
-function askAI(){
-  let input = document.getElementById("aiInput");
-  let chat = document.getElementById("chatBox");
+// 🤖 ADVANCED AI
+let lead = { name:"", need:"", budget:"", step:0 };
 
-  chat.innerHTML += "<p class='user-msg'>"+input.value+"</p>";
-  chat.innerHTML += "<p class='ai-msg'>Thanks! We will contact you.</p>";
+function askAI() {
+  const input = document.getElementById("aiInput");
+  const chat = document.getElementById("chatBox");
 
-  input.value="";
+  let text = input.value.trim();
+  if(text === "") return;
+
+  chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
+  input.value = "";
+
+  chat.innerHTML += `<p class="ai-msg" id="typing">Typing...</p>`;
+
+  setTimeout(() => {
+    document.getElementById("typing").remove();
+
+    let reply = "";
+
+    if(lead.step === 0){
+      reply = "👋 Welcome! Apna naam batayein 😊";
+      lead.step = 1;
+    }
+    else if(lead.step === 1){
+      lead.name = text;
+      reply = "Aap kis type ki website chahte hain?";
+      lead.step = 2;
+    }
+    else if(lead.step === 2){
+      lead.need = text;
+      reply = "Aapka budget kya hai?";
+      lead.step = 3;
+    }
+    else if(lead.step === 3){
+      lead.budget = text;
+      reply = "Interested? (yes/no)";
+      lead.step = 4;
+    }
+    else if(lead.step === 4){
+      if(text.toLowerCase().includes("yes")){
+        db.collection("leads").add({
+          name: lead.name,
+          need: lead.need,
+          budget: lead.budget,
+          time: new Date()
+        });
+
+        let msg = `Name: ${lead.name}\nNeed: ${lead.need}\nBudget: ${lead.budget}`;
+        let url = "https://wa.me/923016305418?text=" + encodeURIComponent(msg);
+
+        reply = "Opening WhatsApp...";
+        setTimeout(()=>{ window.open(url, "_blank"); },1500);
+      } else {
+        reply = "Okay 👍";
+      }
+      lead = { name:"", need:"", budget:"", step:0 };
+    }
+
+    chat.innerHTML += `<p class="ai-msg">🤖 ${reply}</p>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    localStorage.setItem("chat", chat.innerHTML);
+
+  }, 800);
+}
+
+// 💾 LOAD CHAT
+window.onload = () => {
+  const saved = localStorage.getItem("chat");
+  if(saved){
+    document.getElementById("chatBox").innerHTML = saved;
+  }
+};
+
+// 🎤 VOICE AI
+function startVoice(){
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "en-US";
+
+  recognition.onresult = function(event){
+    document.getElementById("aiInput").value = event.results[0][0].transcript;
+  };
+
+  recognition.start();
 }
 </script>
 
