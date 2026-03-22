@@ -37,12 +37,28 @@
       border-radius: 5px;
       background: gold;
       cursor: pointer;
-      transition: 0.3s;
     }
 
-    .nav-links button:hover {
-      background: orange;
-      transform: scale(1.05);
+    /* 🔥 NEW NOTIFICATION */
+    .notification {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: green;
+      padding: 10px 15px;
+      border-radius: 5px;
+      display: none;
+      z-index: 999;
+    }
+
+    /* 🔥 VISITOR COUNTER */
+    .visitor {
+      position: fixed;
+      top: 70px;
+      left: 20px;
+      background: black;
+      padding: 10px;
+      border-radius: 5px;
     }
 
     .bg-slider {
@@ -71,7 +87,7 @@
     @keyframes slideShow {
       0% { opacity: 0; }
       10% { opacity: 1; }
-      30% { opacity: 1; transform: scale(1.08); }
+      30% { opacity: 1; transform: scale(1.05); }
       40% { opacity: 0; }
       100% { opacity: 0; }
     }
@@ -85,12 +101,6 @@
 
     .container {
       margin-top: 90px;
-      animation: fadeIn 1s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .box {
@@ -101,17 +111,6 @@
       border-radius: 15px;
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(12px);
-      animation: slideUp 0.8s ease;
-      transition: 0.3s;
-    }
-
-    .box:hover {
-      transform: translateY(-5px);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     input, textarea {
@@ -129,12 +128,6 @@
       cursor: pointer;
       border-radius: 5px;
       font-weight: bold;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: orange;
-      transform: scale(1.05);
     }
 
     .whatsapp {
@@ -146,15 +139,10 @@
       padding: 15px;
       border-radius: 50%;
       text-decoration: none;
-      transition: 0.3s;
-    }
-
-    .whatsapp:hover {
-      transform: scale(1.1);
     }
   </style>
 
-  <!-- Firebase -->
+  <!-- Firebase (UNCHANGED) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -171,10 +159,17 @@
   </div>
 </div>
 
+<!-- 🔔 Notification -->
+<div id="notify" class="notification"></div>
+
+<!-- 👁 Visitor -->
+<div class="visitor">Visitors: <span id="count">0</span></div>
+
+<!-- 🔥 Freelancing Images -->
 <div class="bg-slider">
-  <img src="https://images.unsplash.com/photo-1506765515384-028b60a970df?auto=format&fit=crop&w=1920&q=80">
-  <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&w=1920&q=80">
-  <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1920&q=80">
+  <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a">
+  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
+  <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d">
 </div>
 
 <div class="bg-overlay"></div>
@@ -209,6 +204,16 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  // 🔥 VISITOR COUNT
+  const visitorRef = db.collection("site").doc("visitors");
+
+  visitorRef.get().then(doc => {
+    let count = doc.exists ? doc.data().count : 0;
+    count++;
+    visitorRef.set({count: count});
+    document.getElementById("count").innerText = count;
+  });
+
   function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
@@ -219,8 +224,12 @@
 
   auth.onAuthStateChanged(user => {
     if (user) {
+
       document.getElementById("user").innerText =
         "👤 " + user.displayName + " (" + user.email + ")";
+
+      // 🔔 UI Notification
+      showNotification("New Login: " + user.email);
 
       db.collection("users").doc(user.uid).set({
         name: user.displayName,
@@ -233,6 +242,15 @@
       document.getElementById("user").innerText = "";
     }
   });
+
+  function showNotification(text) {
+    const n = document.getElementById("notify");
+    n.innerText = text;
+    n.style.display = "block";
+    setTimeout(() => {
+      n.style.display = "none";
+    }, 3000);
+  }
 
   function logout() {
     auth.signOut().then(() => {
@@ -264,7 +282,6 @@
     document.getElementById(id).scrollIntoView({ behavior: "smooth" });
   }
 
-  /* 🔥 AUTO WHATSAPP MESSAGE */
   function openWhatsApp() {
     const message = "Hello Sweetu! I want to contact you.";
     const url = "https://wa.me/923016305418?text=" + encodeURIComponent(message);
@@ -273,4 +290,4 @@
 </script>
 
 </body>
-</html>
+  </html>
