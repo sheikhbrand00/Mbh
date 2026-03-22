@@ -252,34 +252,8 @@
     window.open(url, "_blank");
   }
 
-  // 🤖 ADVANCED AI (SMART UNDERSTANDING)
-  let history = [];
-
-  function getSmartReply(text) {
-    text = text.toLowerCase();
-
-    if(text.includes("price") || text.includes("cost")) {
-      return "💰 Price: 1500 PKR\nProfessional website with AI + earning system 🚀";
-    }
-
-    if(text.includes("time") || text.includes("kitne din")) {
-      return "⏱️ 2-3 دن میں آپ کی website ready ہو جائے گی";
-    }
-
-    if(text.includes("earn") || text.includes("money")) {
-      return "💸 ہم آپ کو earning website بناتے ہیں جیسے Fiverr, business, affiliate 🔥";
-    }
-
-    if(text.includes("website")) {
-      return "🌐 ہم ہر type کی website بناتے ہیں (Business, AI, Portfolio, Fiverr gigs)";
-    }
-
-    if(text.includes("contact")) {
-      return "📲 WhatsApp پر بات کریں:\nhttps://wa.me/923016305418";
-    }
-
-    return null;
-  }
+  // 🤖 ULTRA AI (UPGRADED ONLY)
+  let lead = { name:"", need:"", interested:false };
 
   function askAI() {
     const input = document.getElementById("aiInput");
@@ -289,23 +263,42 @@
     if(text === "") return;
 
     chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
+    input.value = "";
 
-    history.push(text);
+    let reply = "";
 
-    let reply = getSmartReply(text);
+    if(!lead.name) {
+      lead.name = text;
+      reply = "😊 Nice! آپ کو کس type کی website چاہیے؟";
+    }
+    else if(!lead.need) {
+      lead.need = text;
+      reply = "💰 Price: 1500 PKR\n\nInterested?";
+    }
+    else if(!lead.interested) {
+      if(text.toLowerCase().includes("yes")) {
+        lead.interested = true;
 
-    if(!reply) {
-      reply = "🤖 میں سمجھ رہا ہوں...\n\nآپ website بنوانا چاہتے ہیں یا earning کے بارے میں پوچھ رہے ہیں؟ 😊";
+        db.collection("leads").add({
+          name: lead.name,
+          need: lead.need,
+          time: new Date()
+        });
+
+        reply = "🔥 Great!\n\n📲 WhatsApp پر آئیں:\nhttps://wa.me/923016305418";
+        lead = { name:"", need:"", interested:false };
+      } else {
+        reply = "👍 کوئی مسئلہ نہیں، جب ready ہوں WhatsApp پر آ جائیں";
+        lead = { name:"", need:"", interested:false };
+      }
     }
 
     setTimeout(() => {
       chat.innerHTML += `<p class="ai-msg">🤖 ${reply.replace(/\n/g,"<br>")}</p>`;
       chat.scrollTop = chat.scrollHeight;
     }, 400);
-
-    input.value = "";
   }
 </script>
 
 </body>
-                      </html>
+  </html>
