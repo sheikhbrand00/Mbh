@@ -15,8 +15,10 @@
       font-family: Arial;
       color: white;
       text-align: center;
+      background: black;
     }
 
+    /* ✅ PROFESSIONAL NAVBAR */
     .navbar {
       position: fixed;
       top: 0;
@@ -24,33 +26,49 @@
       width: 100%;
       display: flex;
       justify-content: space-between;
-      padding: 10px 20px;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
       z-index: 10;
     }
 
-    .nav-links button {
-      margin: 5px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 5px;
-      background: gold;
-      cursor: pointer;
+    .logo {
+      font-weight: bold;
+      font-size: 18px;
     }
 
+    /* ✅ MODERN BUTTONS */
+    .nav-links button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg, gold, orange);
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .nav-links button:hover {
+      transform: scale(1.1);
+    }
+
+    /* ✅ FULL SCREEN BACKGROUND FIX */
     .bg-slider {
       position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
     }
 
     .bg-slider img {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
       opacity: 0;
       animation: slideShow 18s infinite;
@@ -68,15 +86,16 @@
       100% { opacity: 0; }
     }
 
+    /* ✅ LIGHT OVERLAY (clear background) */
     .bg-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.2);
       z-index: -1;
     }
 
     .container {
-      margin-top: 90px;
+      margin-top: 100px;
     }
 
     .box {
@@ -85,8 +104,9 @@
       width: 90%;
       max-width: 350px;
       border-radius: 15px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
     input, textarea {
@@ -127,7 +147,7 @@
 <body>
 
 <div class="navbar">
-  <div>🚀 Sweetu</div>
+  <div class="logo">🚀 Sweetu</div>
   <div class="nav-links">
     <button onclick="scrollToSection('home')">Home</button>
     <button onclick="scrollToSection('contact')">Contact</button>
@@ -173,25 +193,16 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ✅ GOOGLE LOGIN
   function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .catch((error) => {
-        alert("Login Error: " + error.message);
-      });
+    auth.signInWithRedirect(provider); // ✅ mobile fix
   }
 
-  // ✅ AUTO DETECT LOGIN USER (MAIN FEATURE 🔥)
   auth.onAuthStateChanged(user => {
     if (user) {
-      // UI پر show
       document.getElementById("user").innerText =
         "👤 " + user.displayName + " (" + user.email + ")";
 
-      console.log("User Login:", user.email);
-
-      // ✅ FIRESTORE میں save
       db.collection("users").doc(user.uid).set({
         name: user.displayName,
         email: user.email,
@@ -204,14 +215,12 @@
     }
   });
 
-  // ✅ LOGOUT
   function logout() {
     auth.signOut().then(() => {
       alert("Logged out");
     });
   }
 
-  // ✅ CONTACT FORM
   function sendMessage() {
     const name = document.getElementById("name").value;
     const message = document.getElementById("message").value;
