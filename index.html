@@ -252,8 +252,8 @@
     window.open(url, "_blank");
   }
 
-  // 🤖 ULTRA AI (UPGRADED ONLY)
-  let lead = { name:"", need:"", interested:false };
+  // 🤖 FINAL AI (UPGRADED ONLY)
+  let lead = { name:"", need:"", budget:"", step:0 };
 
   function askAI() {
     const input = document.getElementById("aiInput");
@@ -267,30 +267,55 @@
 
     let reply = "";
 
-    if(!lead.name) {
+    if(lead.step === 0){
+      reply = "👋 Welcome to Sweetu AI Agency 🚀\n\nApna naam batayein 😊";
+      lead.step = 1;
+    }
+
+    else if(lead.step === 1){
       lead.name = text;
-      reply = "😊 Nice! آپ کو کس type کی website چاہیے؟";
+      reply = "😊 Aap kis type ki website chahte hain?";
+      lead.step = 2;
     }
-    else if(!lead.need) {
+
+    else if(lead.step === 2){
       lead.need = text;
-      reply = "💰 Price: 1500 PKR\n\nInterested?";
+      reply = "💰 Aapka budget kya hai? (1500 / 3000 / 5000)";
+      lead.step = 3;
     }
-    else if(!lead.interested) {
-      if(text.toLowerCase().includes("yes")) {
-        lead.interested = true;
+
+    else if(lead.step === 3){
+      lead.budget = text;
+
+      reply = `🔥 Packages:\n\n💰 1500 PKR - Basic\n🚀 3000 PKR - Standard\n👑 5000 PKR - Premium\n\nInterested?`;
+      lead.step = 4;
+    }
+
+    else if(lead.step === 4){
+      if(text.toLowerCase().includes("yes")){
 
         db.collection("leads").add({
           name: lead.name,
           need: lead.need,
+          budget: lead.budget,
           time: new Date()
         });
 
-        reply = "🔥 Great!\n\n📲 WhatsApp پر آئیں:\nhttps://wa.me/923016305418";
-        lead = { name:"", need:"", interested:false };
+        let msg = `Name: ${lead.name}\nNeed: ${lead.need}\nBudget: ${lead.budget}\nI want to start`;
+
+        let url = "https://wa.me/923016305418?text=" + encodeURIComponent(msg);
+
+        reply = "🔥 WhatsApp open ho raha hai...";
+
+        setTimeout(()=>{
+          window.open(url, "_blank");
+        },1500);
+
       } else {
-        reply = "👍 کوئی مسئلہ نہیں، جب ready ہوں WhatsApp پر آ جائیں";
-        lead = { name:"", need:"", interested:false };
+        reply = "👍 Jab ready ho WhatsApp par aa jana";
       }
+
+      lead = { name:"", need:"", budget:"", step:0 };
     }
 
     setTimeout(() => {
@@ -301,4 +326,4 @@
 </script>
 
 </body>
-  </html>
+</html>
