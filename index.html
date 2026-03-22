@@ -39,7 +39,6 @@
       cursor: pointer;
     }
 
-    /* 🔥 NEW NOTIFICATION */
     .notification {
       position: fixed;
       top: 70px;
@@ -49,16 +48,6 @@
       border-radius: 5px;
       display: none;
       z-index: 999;
-    }
-
-    /* 🔥 VISITOR COUNTER */
-    .visitor {
-      position: fixed;
-      top: 70px;
-      left: 20px;
-      background: black;
-      padding: 10px;
-      border-radius: 5px;
     }
 
     .bg-slider {
@@ -142,7 +131,7 @@
     }
   </style>
 
-  <!-- Firebase (UNCHANGED) -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -159,13 +148,8 @@
   </div>
 </div>
 
-<!-- 🔔 Notification -->
 <div id="notify" class="notification"></div>
 
-<!-- 👁 Visitor -->
-<div class="visitor">Visitors: <span id="count">0</span></div>
-
-<!-- 🔥 Freelancing Images -->
 <div class="bg-slider">
   <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a">
   <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
@@ -181,6 +165,16 @@
     <h2>Login with Google</h2>
     <button onclick="googleLogin()">Login with Google</button>
     <p id="user"></p>
+  </div>
+
+  <div class="box">
+    <h2>📊 Login Notifications</h2>
+    <div id="loginList"></div>
+  </div>
+
+  <div class="box">
+    <h2>💬 Messages (Live)</h2>
+    <div id="messageList"></div>
   </div>
 
   <div class="box" id="contact">
@@ -204,16 +198,6 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // 🔥 VISITOR COUNT
-  const visitorRef = db.collection("site").doc("visitors");
-
-  visitorRef.get().then(doc => {
-    let count = doc.exists ? doc.data().count : 0;
-    count++;
-    visitorRef.set({count: count});
-    document.getElementById("count").innerText = count;
-  });
-
   function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
@@ -228,7 +212,6 @@
       document.getElementById("user").innerText =
         "👤 " + user.displayName + " (" + user.email + ")";
 
-      // 🔔 UI Notification
       showNotification("New Login: " + user.email);
 
       db.collection("users").doc(user.uid).set({
@@ -287,7 +270,32 @@
     const url = "https://wa.me/923016305418?text=" + encodeURIComponent(message);
     window.open(url, "_blank");
   }
+
+  // 🔥 REALTIME LOGIN LIST
+  db.collection("users").orderBy("lastLogin", "desc")
+  .onSnapshot(snapshot => {
+    let html = "";
+    snapshot.forEach(doc => {
+      let data = doc.data();
+      let time = data.lastLogin?.toDate().toLocaleString();
+      html += `<p>👤 ${data.email}<br>🕒 ${time}</p><hr>`;
+    });
+    document.getElementById("loginList").innerHTML = html;
+  });
+
+  // 🔥 REALTIME MESSAGE LIST
+  db.collection("messages").orderBy("time", "desc")
+  .onSnapshot(snapshot => {
+    let html = "";
+    snapshot.forEach(doc => {
+      let data = doc.data();
+      let time = data.time?.toDate().toLocaleString();
+      html += `<p><b>${data.name}</b>: ${data.message}<br>🕒 ${time}</p><hr>`;
+    });
+    document.getElementById("messageList").innerHTML = html;
+  });
+
 </script>
 
 </body>
-  </html>
+    </html>
