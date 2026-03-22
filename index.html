@@ -118,7 +118,6 @@
       text-decoration: none;
     }
 
-    /* 🤖 AI */
     #chatBox p {
       margin: 6px;
       padding: 6px;
@@ -165,7 +164,6 @@
     <p id="user"></p>
   </div>
 
-  <!-- 🤖 ADVANCED AI -->
   <div class="box">
     <h2>🤖 AI Business Assistant</h2>
     <div id="chatBox" style="height:200px;overflow:auto;"></div>
@@ -254,9 +252,34 @@
     window.open(url, "_blank");
   }
 
-  // 🤖 AUTO CLIENT CAPTURE AI
-  let step = 0;
-  let lead = {};
+  // 🤖 ADVANCED AI (SMART UNDERSTANDING)
+  let history = [];
+
+  function getSmartReply(text) {
+    text = text.toLowerCase();
+
+    if(text.includes("price") || text.includes("cost")) {
+      return "💰 Price: 1500 PKR\nProfessional website with AI + earning system 🚀";
+    }
+
+    if(text.includes("time") || text.includes("kitne din")) {
+      return "⏱️ 2-3 دن میں آپ کی website ready ہو جائے گی";
+    }
+
+    if(text.includes("earn") || text.includes("money")) {
+      return "💸 ہم آپ کو earning website بناتے ہیں جیسے Fiverr, business, affiliate 🔥";
+    }
+
+    if(text.includes("website")) {
+      return "🌐 ہم ہر type کی website بناتے ہیں (Business, AI, Portfolio, Fiverr gigs)";
+    }
+
+    if(text.includes("contact")) {
+      return "📲 WhatsApp پر بات کریں:\nhttps://wa.me/923016305418";
+    }
+
+    return null;
+  }
 
   function askAI() {
     const input = document.getElementById("aiInput");
@@ -267,41 +290,12 @@
 
     chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
 
-    let reply = "";
+    history.push(text);
 
-    if(step === 0) {
-      reply = "🚀 Welcome! ہم آپ کو earning machine بنا سکتے ہیں 💰\n\nآپ کا نام کیا ہے؟";
-      step = 1;
-    }
+    let reply = getSmartReply(text);
 
-    else if(step === 1) {
-      lead.name = text;
-      reply = `😊 Nice ${text}!\n\nآپ کو کس type کی website چاہیے؟`;
-      step = 2;
-    }
-
-    else if(step === 2) {
-      lead.need = text;
-      reply = "💰 ہم آپ کے لیے professional website بنائیں گے.\n\n🔥 Price: 1500 PKR\n\nInterested? (yes/no)";
-      step = 3;
-    }
-
-    else if(step === 3) {
-      if(text.toLowerCase().includes("yes")) {
-
-        db.collection("leads").add({
-          name: lead.name,
-          need: lead.need,
-          time: new Date()
-        });
-
-        reply = "🔥 Great!\n\n📲 WhatsApp پر آئیں:\nhttps://wa.me/923016305418\n\nہم فوراً start کرتے ہیں!";
-      } else {
-        reply = "😊 کوئی مسئلہ نہیں!\n\nجب ready ہوں WhatsApp پر آئیں 👍";
-      }
-
-      step = 0;
-      lead = {};
+    if(!reply) {
+      reply = "🤖 میں سمجھ رہا ہوں...\n\nآپ website بنوانا چاہتے ہیں یا earning کے بارے میں پوچھ رہے ہیں؟ 😊";
     }
 
     setTimeout(() => {
@@ -314,4 +308,4 @@
 </script>
 
 </body>
-    </html>
+                      </html>
