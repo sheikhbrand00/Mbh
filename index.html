@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Sweetu Pro Website</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -37,17 +36,6 @@
       border-radius: 5px;
       background: gold;
       cursor: pointer;
-    }
-
-    .notification {
-      position: fixed;
-      top: 70px;
-      right: 20px;
-      background: green;
-      padding: 10px 15px;
-      border-radius: 5px;
-      display: none;
-      z-index: 999;
     }
 
     .bg-slider {
@@ -129,6 +117,18 @@
       border-radius: 50%;
       text-decoration: none;
     }
+
+    /* 🤖 AI */
+    #chatBox p {
+      margin: 6px;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align:left;
+    }
+
+    .user-msg { background: #222; }
+    .ai-msg { background: green; }
   </style>
 
   <!-- Firebase -->
@@ -148,8 +148,6 @@
   </div>
 </div>
 
-<div id="notify" class="notification"></div>
-
 <div class="bg-slider">
   <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a">
   <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
@@ -167,14 +165,12 @@
     <p id="user"></p>
   </div>
 
+  <!-- 🤖 AI BOX -->
   <div class="box">
-    <h2>📊 Login Notifications</h2>
-    <div id="loginList"></div>
-  </div>
-
-  <div class="box">
-    <h2>💬 Messages (Live)</h2>
-    <div id="messageList"></div>
+    <h2>🤖 AI Assistant</h2>
+    <div id="chatBox" style="height:200px;overflow:auto;"></div>
+    <input id="aiInput" placeholder="Ask something...">
+    <button onclick="askAI()">Send</button>
   </div>
 
   <div class="box" id="contact">
@@ -185,7 +181,7 @@
   </div>
 </div>
 
-<a class="whatsapp" href="https://wa.me/923016305418">💬</a>
+<a class="whatsapp" href="https://wa.me/923016305418?text=Hello Sweetu! I want to contact you.">💬</a>
 
 <script>
   const firebaseConfig = {
@@ -208,11 +204,8 @@
 
   auth.onAuthStateChanged(user => {
     if (user) {
-
       document.getElementById("user").innerText =
         "👤 " + user.displayName + " (" + user.email + ")";
-
-      showNotification("New Login: " + user.email);
 
       db.collection("users").doc(user.uid).set({
         name: user.displayName,
@@ -220,20 +213,10 @@
         uid: user.uid,
         lastLogin: new Date()
       });
-
     } else {
       document.getElementById("user").innerText = "";
     }
   });
-
-  function showNotification(text) {
-    const n = document.getElementById("notify");
-    n.innerText = text;
-    n.style.display = "block";
-    setTimeout(() => {
-      n.style.display = "none";
-    }, 3000);
-  }
 
   function logout() {
     auth.signOut().then(() => {
@@ -271,31 +254,30 @@
     window.open(url, "_blank");
   }
 
-  // 🔥 REALTIME LOGIN LIST
-  db.collection("users").orderBy("lastLogin", "desc")
-  .onSnapshot(snapshot => {
-    let html = "";
-    snapshot.forEach(doc => {
-      let data = doc.data();
-      let time = data.lastLogin?.toDate().toLocaleString();
-      html += `<p>👤 ${data.email}<br>🕒 ${time}</p><hr>`;
-    });
-    document.getElementById("loginList").innerHTML = html;
-  });
+  // 🤖 SIMPLE AI
+  function askAI() {
+    const input = document.getElementById("aiInput");
+    const chat = document.getElementById("chatBox");
 
-  // 🔥 REALTIME MESSAGE LIST
-  db.collection("messages").orderBy("time", "desc")
-  .onSnapshot(snapshot => {
-    let html = "";
-    snapshot.forEach(doc => {
-      let data = doc.data();
-      let time = data.time?.toDate().toLocaleString();
-      html += `<p><b>${data.name}</b>: ${data.message}<br>🕒 ${time}</p><hr>`;
-    });
-    document.getElementById("messageList").innerHTML = html;
-  });
+    let text = input.value.trim();
+    if(text === "") return;
 
+    chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
+
+    let reply = "😊 Thanks! ہم جلد reply دیں گے";
+
+    if(text.toLowerCase().includes("price")) reply = "💰 Price depends on your project. Contact on WhatsApp.";
+    else if(text.toLowerCase().includes("website")) reply = "🌐 ہم professional websites بناتے ہیں!";
+    else if(text.toLowerCase().includes("hello")) reply = "👋 Hello! کیسے help کر سکتے ہیں؟";
+
+    setTimeout(() => {
+      chat.innerHTML += `<p class="ai-msg">🤖 ${reply}</p>`;
+      chat.scrollTop = chat.scrollHeight;
+    }, 400);
+
+    input.value = "";
+  }
 </script>
 
 </body>
-    </html>
+      </html>
