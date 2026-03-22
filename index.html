@@ -1,249 +1,317 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Sweetu Pro Website</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: Arial;
+      color: white;
+      text-align: center;
+    }
 
-<title>My Freelance Website</title>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
 
-<style>
+    .nav-links button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      background: gold;
+      cursor: pointer;
+    }
 
-body{
-margin:0;
-font-family:Arial;
-color:white;
-text-align:center;
-height:100vh;
-background-size:cover;
-background-position:center;
-transition:1s;
-}
+    .bg-slider {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -2;
+    }
 
-.overlay{
-background:rgba(0,0,0,0.6);
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-}
+    .bg-slider img {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      opacity: 0;
+      animation: slideShow 18s infinite;
+    }
 
-img{
-width:140px;
-border-radius:50%;
-border:4px solid white;
-}
+    .bg-slider img:nth-child(1) { animation-delay: 0s; }
+    .bg-slider img:nth-child(2) { animation-delay: 6s; }
+    .bg-slider img:nth-child(3) { animation-delay: 12s; }
 
-h1{
-font-size:40px;
-margin:10px;
-}
+    @keyframes slideShow {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      30% { opacity: 1; transform: scale(1.05); }
+      40% { opacity: 0; }
+      100% { opacity: 0; }
+    }
 
-p{
-font-size:18px;
-}
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: -1;
+    }
 
-.button{
-display:inline-block;
-padding:12px 25px;
-margin:10px;
-font-size:18px;
-color:white;
-text-decoration:none;
-border-radius:8px;
-}
+    .container {
+      margin-top: 90px;
+    }
 
-.whatsapp{
-background:#25D366;
-}
+    .box {
+      margin: 15px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 350px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px);
+    }
 
-.instagram{
-background:#E1306C;
-}
+    input, textarea {
+      padding: 10px;
+      margin: 10px;
+      width: 90%;
+      border: none;
+      border-radius: 5px;
+    }
 
-/* Floating WhatsApp */
+    button {
+      padding: 10px 20px;
+      background: gold;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
 
-.float{
-position:fixed;
-bottom:20px;
-right:20px;
-background:#25D366;
-color:white;
-width:60px;
-height:60px;
-border-radius:50%;
-text-align:center;
-font-size:30px;
-line-height:60px;
-text-decoration:none;
-}
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: green;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      text-decoration: none;
+    }
 
-/* 🤖 AI BOX */
+    /* 🤖 AI */
+    #chatBox p {
+      margin: 6px;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align:left;
+    }
 
-.ai-box{
-position:fixed;
-bottom:100px;
-right:20px;
-width:250px;
-background:black;
-padding:10px;
-border-radius:10px;
-}
+    .user-msg { background: #222; }
+    .ai-msg { background: green; }
+  </style>
 
-.ai-box input{
-width:90%;
-padding:5px;
-margin-top:5px;
-}
-
-.ai-box button{
-margin-top:5px;
-padding:5px;
-}
-
-#chat p{
-font-size:12px;
-text-align:left;
-margin:5px;
-}
-
-</style>
-
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 
 <body>
 
-<div class="overlay">
-
-<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde">
-
-<h1>Sweetu</h1>
-
-<p>Freelancer | Web Design | Online Services</p>
-
-<a class="button whatsapp" onclick="startWhatsApp()">
-WhatsApp Me
-</a>
-
-<a class="button instagram" href="https://www.instagram.com/sweetu_hun_yawr?igsh=MXRndmg1Ym1hbjNzbg==">
-Instagram
-</a>
-
+<div class="navbar">
+  <div>🚀 Sweetu</div>
+  <div class="nav-links">
+    <button onclick="scrollToSection('home')">Home</button>
+    <button onclick="openWhatsApp()">Contact</button>
+    <button onclick="logout()">Logout</button>
+  </div>
 </div>
 
-<!-- 🤖 AI BOX -->
-
-<div class="ai-box">
-<div id="chat"></div>
-<input id="aiInput" placeholder="Type...">
-<button onclick="askAI()">Send</button>
+<div class="bg-slider">
+  <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a">
+  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
+  <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d">
 </div>
 
-<!-- Floating WhatsApp -->
+<div class="bg-overlay"></div>
 
-<a href="#" onclick="startWhatsApp()" class="float">
-💬
-</a>
+<div class="container" id="home">
+  <h1>🚀 Sweetu Business Website</h1>
+
+  <div class="box">
+    <h2>Login with Google</h2>
+    <button onclick="googleLogin()">Login with Google</button>
+    <p id="user"></p>
+  </div>
+
+  <!-- 🤖 ADVANCED AI -->
+  <div class="box">
+    <h2>🤖 AI Business Assistant</h2>
+    <div id="chatBox" style="height:200px;overflow:auto;"></div>
+    <input id="aiInput" placeholder="Start chat...">
+    <button onclick="askAI()">Send</button>
+  </div>
+
+  <div class="box" id="contact">
+    <h2>Contact Form</h2>
+    <input id="name" placeholder="Your Name">
+    <textarea id="message" placeholder="Your Message"></textarea><br>
+    <button onclick="sendMessage()">Send Message</button>
+  </div>
+</div>
+
+<a class="whatsapp" href="https://wa.me/923016305418?text=Hello Sweetu! I want to contact you.">💬</a>
 
 <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdyWxAqaHswKhP1CJSGviFFg4h9oMK2Aw",
+    authDomain: "sweetu-site.firebaseapp.com",
+    projectId: "sweetu-site"
+  };
 
-let images=[
-"https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-"https://images.unsplash.com/photo-1504639725590-34d0984388bd",
-"https://images.unsplash.com/photo-1519389950473-47ba0277781c"
-];
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-let i=0;
+  function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .catch((error) => {
+        alert("Login Error: " + error.message);
+      });
+  }
 
-function changeBackground(){
-document.body.style.backgroundImage="url("+images[i]+")";
-i++;
-if(i==images.length){ i=0; }
-}
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("user").innerText =
+        "👤 " + user.displayName + " (" + user.email + ")";
 
-setInterval(changeBackground,4000);
-changeBackground();
+      db.collection("users").doc(user.uid).set({
+        name: user.displayName,
+        email: user.email,
+        uid: user.uid,
+        lastLogin: new Date()
+      });
+    } else {
+      document.getElementById("user").innerText = "";
+    }
+  });
 
+  function logout() {
+    auth.signOut().then(() => {
+      alert("Logged out");
+    });
+  }
 
-// 🤖 AI SYSTEM
+  function sendMessage() {
+    const name = document.getElementById("name").value;
+    const message = document.getElementById("message").value;
 
-let step=0;
-let lead={};
+    if(name === "" || message === "") {
+      alert("Please fill all fields");
+      return;
+    }
 
-function askAI(){
+    db.collection("messages").add({
+      name: name,
+      message: message,
+      time: new Date()
+    }).then(() => {
+      alert("Message Sent ✅");
+      document.getElementById("name").value = "";
+      document.getElementById("message").value = "";
+    });
+  }
 
-let input=document.getElementById("aiInput");
-let chat=document.getElementById("chat");
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
 
-let text=input.value;
-if(text=="") return;
+  function openWhatsApp() {
+    const message = "Hello Sweetu! I want to contact you.";
+    const url = "https://wa.me/923016305418?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
+  }
 
-chat.innerHTML += "<p>👤 "+text+"</p>";
+  // 🤖 AUTO CLIENT CAPTURE AI
+  let step = 0;
+  let lead = {};
 
-let reply="";
+  function askAI() {
+    const input = document.getElementById("aiInput");
+    const chat = document.getElementById("chatBox");
 
-if(step==0){
-reply="🚀 Welcome!\nName?";
-step=1;
-}
+    let text = input.value.trim();
+    if(text === "") return;
 
-else if(step==1){
-lead.name=text;
-reply="😊 What website you need?";
-step=2;
-}
+    chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
 
-else if(step==2){
-lead.need=text;
-reply="💰 Price: 1500 PKR\nInterested? (yes/no)";
-step=3;
-}
+    let reply = "";
 
-else if(step==3){
+    if(step === 0) {
+      reply = "🚀 Welcome! ہم آپ کو earning machine بنا سکتے ہیں 💰\n\nآپ کا نام کیا ہے؟";
+      step = 1;
+    }
 
-if(text.toLowerCase().includes("yes")){
+    else if(step === 1) {
+      lead.name = text;
+      reply = `😊 Nice ${text}!\n\nآپ کو کس type کی website چاہیے؟`;
+      step = 2;
+    }
 
-let msg=
-"Hello Sweetu!\n"+
-"Name: "+lead.name+"\n"+
-"Need: "+lead.need+"\n"+
-"Budget: 1500 PKR";
+    else if(step === 2) {
+      lead.need = text;
+      reply = "💰 ہم آپ کے لیے professional website بنائیں گے.\n\n🔥 Price: 1500 PKR\n\nInterested? (yes/no)";
+      step = 3;
+    }
 
-let url="https://wa.me/923016305418?text="+encodeURIComponent(msg);
+    else if(step === 3) {
+      if(text.toLowerCase().includes("yes")) {
 
-reply="📲 Opening WhatsApp...";
+        db.collection("leads").add({
+          name: lead.name,
+          need: lead.need,
+          time: new Date()
+        });
 
-setTimeout(()=>{
-window.open(url,"_blank");
-},1000);
+        reply = "🔥 Great!\n\n📲 WhatsApp پر آئیں:\nhttps://wa.me/923016305418\n\nہم فوراً start کرتے ہیں!";
+      } else {
+        reply = "😊 کوئی مسئلہ نہیں!\n\nجب ready ہوں WhatsApp پر آئیں 👍";
+      }
 
-}else{
-reply="👍 Contact later on WhatsApp";
-}
+      step = 0;
+      lead = {};
+    }
 
-step=0;
-lead={};
-}
+    setTimeout(() => {
+      chat.innerHTML += `<p class="ai-msg">🤖 ${reply.replace(/\n/g,"<br>")}</p>`;
+      chat.scrollTop = chat.scrollHeight;
+    }, 400);
 
-setTimeout(()=>{
-chat.innerHTML += "<p>🤖 "+reply+"</p>";
-},300);
-
-input.value="";
-}
-
-
-// 🔥 WhatsApp Button Smart
-
-function startWhatsApp(){
-
-let msg="Hello Sweetu! I want a website (1500 PKR)";
-let url="https://wa.me/923016305418?text="+encodeURIComponent(msg);
-window.open(url,"_blank");
-
-}
-
+    input.value = "";
+  }
 </script>
 
 </body>
-</html>
+    </html>
