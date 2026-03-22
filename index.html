@@ -3,22 +3,25 @@
 <head>
   <title>Sweetu Pro Website</title>
 
-  <!-- ✅ Mobile Fix -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
       font-family: Arial;
       color: white;
       text-align: center;
-      overflow-x: hidden;
     }
 
     /* 🔥 NAVBAR */
     .navbar {
       position: fixed;
       top: 0;
+      left: 0;
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -37,20 +40,21 @@
       cursor: pointer;
     }
 
-    /* 🔥 FULL SCREEN BACKGROUND */
+    /* 🔥 BACKGROUND FULL FIX */
     .bg-slider {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      inset: 0; /* 🔥 FULL SCREEN FIX */
+      width: 100%;
+      height: 100%;
       z-index: -1;
     }
 
     .bg-slider img {
       position: absolute;
-      width: 100vw;
-      height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       object-position: center;
       opacity: 0;
@@ -64,17 +68,24 @@
     @keyframes slideShow {
       0% { opacity: 0; transform: scale(1); }
       10% { opacity: 1; }
-      30% { opacity: 1; transform: scale(1.1); }
+      30% { opacity: 1; transform: scale(1.08); }
       40% { opacity: 0; }
       100% { opacity: 0; }
     }
 
-    /* 🔥 CONTENT CENTER */
-    .container {
-      margin-top: 80px;
+    /* 🔥 DARK OVERLAY (text clear) */
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: -1;
     }
 
-    /* 🔥 GLASS BOX */
+    /* 🔥 CONTENT */
+    .container {
+      margin-top: 90px;
+    }
+
     .box {
       margin: 15px auto;
       padding: 20px;
@@ -133,24 +144,24 @@
   </div>
 </div>
 
-<!-- 🔥 Background -->
+<!-- 🔥 BACKGROUND -->
 <div class="bg-slider">
   <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
   <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
   <img src="https://images.unsplash.com/photo-1551434678-e076c223a692">
 </div>
 
+<div class="bg-overlay"></div>
+
 <div class="container" id="home">
   <h1>🚀 Sweetu Business Website</h1>
 
-  <!-- LOGIN -->
   <div class="box">
     <h2>Login with Google</h2>
     <button onclick="googleLogin()">Login with Google</button>
     <p id="user"></p>
   </div>
 
-  <!-- CONTACT -->
   <div class="box" id="contact">
     <h2>Contact Form</h2>
     <input id="name" placeholder="Your Name">
@@ -217,4 +228,4 @@
 </script>
 
 </body>
-  </html>
+      </html>
