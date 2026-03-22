@@ -18,9 +18,7 @@
       background: linear-gradient(to right, #000000, #1a1a1a);
     }
 
-    .dark {
-      background: #111;
-    }
+    .dark { background: #111; }
 
     .navbar {
       position: fixed;
@@ -51,11 +49,6 @@
       background: rgba(0,0,0,0.7);
       backdrop-filter: blur(10px);
       box-shadow: 0 0 15px rgba(255,215,0,0.3);
-      transition: 0.3s;
-    }
-
-    .box:hover {
-      transform: scale(1.05);
     }
 
     input, textarea {
@@ -76,24 +69,10 @@
     }
 
     #chatBox { height:200px; overflow:auto; }
-
     .user-msg { background:#222; padding:6px; margin:5px; }
     .ai-msg { background:green; padding:6px; margin:5px; }
-
-    #notify {
-      position: fixed;
-      top: 70px;
-      right: 10px;
-      background: gold;
-      color: black;
-      padding: 10px;
-      border-radius: 10px;
-      display: none;
-      font-weight: bold;
-    }
   </style>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -113,23 +92,21 @@
 
 <h1>🚀 Sweetu Business Website</h1>
 
-<!-- LOGIN -->
 <div class="box">
   <h2>Login</h2>
   <button onclick="googleLogin()">Login with Google</button>
   <p id="user"></p>
 </div>
 
-<!-- AI CHAT -->
 <div class="box">
   <h2>🤖 AI Assistant</h2>
   <div id="chatBox"></div>
   <input id="aiInput" placeholder="Start chat...">
   <button onclick="askAI()">Send</button>
   <button onclick="startVoice()">🎤 Speak</button>
+  <button onclick="clearChat()">🗑 Clear</button>
 </div>
 
-<!-- CONTACT -->
 <div class="box">
   <h2>Contact</h2>
   <input id="name" placeholder="Your Name">
@@ -138,20 +115,16 @@
   <p>📧 shkgeeeee@gmail.com</p>
 </div>
 
-<!-- PAYMENT -->
 <div class="box">
   <h2>💳 Buy Now</h2>
   <button onclick="payNow()">JazzCash Pay</button>
 </div>
 
-<!-- REVIEWS -->
 <div class="box">
   <h2>⭐ Reviews</h2>
   <p>⭐⭐⭐⭐⭐ Amazing Work!</p>
   <p>⭐⭐⭐⭐⭐ Best Developer</p>
 </div>
-
-<div id="notify">Done ✅</div>
 
 </div>
 
@@ -166,7 +139,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// LOGIN
 function googleLogin(){
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider);
@@ -181,16 +153,13 @@ auth.onAuthStateChanged(user=>{
   }
 });
 
-// ✅ FIXED LOGOUT
 function logout(){
   auth.signOut().then(()=>{
-    alert("Logout Successful ✅");
     document.getElementById("user").innerText = "";
     location.reload();
   });
 }
 
-// CONTACT
 function sendMessage(){
   let name = document.getElementById("name").value;
   let message = document.getElementById("message").value;
@@ -199,20 +168,18 @@ function sendMessage(){
   alert("Message Sent");
 }
 
-// 💳 PAYMENT → WhatsApp
 function payNow(){
   let msg = "I have paid via JazzCash 03016305418";
   let url = "https://wa.me/923016305418?text=" + encodeURIComponent(msg);
   window.open(url, "_blank");
 }
 
-// DARK MODE
 function toggleDark(){
   document.body.classList.toggle("dark");
 }
 
-// 🤖 AI SYSTEM
-let lead = { name:"", need:"", budget:"", step:0 };
+// 🤖 AI
+let lead = { name:"", need:"", budget:"", step:1 };
 
 function askAI() {
   const input = document.getElementById("aiInput");
@@ -224,73 +191,61 @@ function askAI() {
   chat.innerHTML += `<p class="user-msg">👤 ${text}</p>`;
   input.value = "";
 
-  chat.innerHTML += `<p class="ai-msg" id="typing">Typing...</p>`;
+  let reply = "";
 
-  setTimeout(() => {
-    document.getElementById("typing").remove();
+  if(lead.step === 1){
+    lead.name = text;
+    reply = "Aap kis type ki website chahte hain?";
+    lead.step = 2;
+  }
+  else if(lead.step === 2){
+    lead.need = text;
+    reply = "Aapka budget kya hai?";
+    lead.step = 3;
+  }
+  else if(lead.step === 3){
+    lead.budget = text;
+    reply = "Interested? (yes/no)";
+    lead.step = 4;
+  }
+  else if(lead.step === 4){
+    if(text.toLowerCase().includes("yes")){
+      db.collection("leads").add({
+        name: lead.name,
+        need: lead.need,
+        budget: lead.budget,
+        time: new Date()
+      });
 
-    let reply = "";
+      let msg = `Name: ${lead.name}\nNeed: ${lead.need}\nBudget: ${lead.budget}`;
+      let url = "https://wa.me/923016305418?text=" + encodeURIComponent(msg);
 
-    if(lead.step === 0){
-      reply = "👋 Welcome to Sweetu AI 🚀<br>Apna naam batayein 😊";
-      lead.step = 1;
+      reply = "Opening WhatsApp...";
+      setTimeout(()=>{ window.open(url, "_blank"); },1500);
+    } else {
+      reply = "Okay 👍";
     }
-    else if(lead.step === 1){
-      lead.name = text;
-      reply = "Aap kis type ki website chahte hain?";
-      lead.step = 2;
-    }
-    else if(lead.step === 2){
-      lead.need = text;
-      reply = "Aapka budget kya hai?";
-      lead.step = 3;
-    }
-    else if(lead.step === 3){
-      lead.budget = text;
-      reply = "Interested? (yes/no)";
-      lead.step = 4;
-    }
-    else if(lead.step === 4){
-      if(text.toLowerCase().includes("yes")){
-        db.collection("leads").add({
-          name: lead.name,
-          need: lead.need,
-          budget: lead.budget,
-          time: new Date()
-        });
+    lead = { name:"", need:"", budget:"", step:1 };
+  }
 
-        let msg = `Name: ${lead.name}\nNeed: ${lead.need}\nBudget: ${lead.budget}`;
-        let url = "https://wa.me/923016305418?text=" + encodeURIComponent(msg);
-
-        reply = "Opening WhatsApp...";
-        setTimeout(()=>{ window.open(url, "_blank"); },1500);
-      } else {
-        reply = "Okay 👍";
-      }
-      lead = { name:"", need:"", budget:"", step:0 };
-    }
-
-    chat.innerHTML += `<p class="ai-msg">🤖 ${reply}</p>`;
-    chat.scrollTop = chat.scrollHeight;
-
-    localStorage.setItem("chat", chat.innerHTML);
-
-  }, 800);
+  chat.innerHTML += `<p class="ai-msg">🤖 ${reply}</p>`;
+  chat.scrollTop = chat.scrollHeight;
 }
 
-// 💾 LOAD CHAT + AUTO START
+// ✅ Fresh start every time
 window.onload = () => {
-  const chat = document.getElementById("chatBox");
-  const saved = localStorage.getItem("chat");
-
-  if(saved){
-    chat.innerHTML = saved;
-  } else {
-    chat.innerHTML = `<p class="ai-msg">🤖 Welcome to Sweetu AI 🚀<br>Apna naam batayein 😊</p>`;
-  }
+  document.getElementById("chatBox").innerHTML =
+  `<p class="ai-msg">🤖 Welcome to Sweetu AI 🚀<br>Apna naam batayein 😊</p>`;
 };
 
-// 🎤 VOICE AI (URDU)
+// 🗑 Clear Chat
+function clearChat(){
+  document.getElementById("chatBox").innerHTML =
+  `<p class="ai-msg">🤖 Welcome to Sweetu AI 🚀<br>Apna naam batayein 😊</p>`;
+  lead = { name:"", need:"", budget:"", step:1 };
+}
+
+// 🎤 Voice
 function startVoice(){
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = "ur-PK";
@@ -304,4 +259,4 @@ function startVoice(){
 </script>
 
 </body>
-                                  </html>
+    </html>
